@@ -39,5 +39,17 @@ namespace Harmony.Services.Spotify
             var body = await response.Content.ReadFromJsonAsync<CurrentUser>();
             return body;
         }
+
+        public async Task<PlaylistItem> GetPlaylist (string token, string playlistId)
+        {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            
+            var response = await _client.GetAsync($"/v1/playlists/{playlistId}");
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            var body = await response.Content.ReadFromJsonAsync<PlaylistItem>();
+            return body;
+        }
     }
 }

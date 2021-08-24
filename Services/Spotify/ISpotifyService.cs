@@ -10,5 +10,7 @@ namespace Harmony.Services.Spotify
         Task<UserPlaylists> GetUserPlaylists (string token);
         
         Task<CurrentUser> GetUser (string token);
+
+        Task<PlaylistItem> GetPlaylist (string token, string playlistId);
     }
 }
