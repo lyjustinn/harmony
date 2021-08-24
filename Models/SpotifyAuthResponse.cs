@@ -2,6 +2,6 @@ namespace Harmony.Models
 {
     public class SpotifyAuthResponse
     {
-        public string access_token { get; set; }
+        public string Access_token { get; set; }
     }
 }

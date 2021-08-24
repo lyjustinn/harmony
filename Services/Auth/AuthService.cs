@@ -34,7 +34,7 @@ namespace Harmony.Services.Auth
                 if (!response.IsSuccessStatusCode) return "";
 
                 var body = await response.Content.ReadFromJsonAsync<SpotifyAuthResponse>();
-                return body.access_token;
+                return body.Access_token;
             } catch (Exception e) 
             {
                 Console.WriteLine(e);
