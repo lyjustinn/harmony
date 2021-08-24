@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Harmony.Services.Auth;
+using Harmony.Services.Spotify;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +30,7 @@ namespace Harmony
         {
             services.AddControllers();
             services.AddHttpClient<IAuthService, AuthService>();
+            services.AddHttpClient<ISpotifyService, SpotifyService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Harmony", Version = "v1" });

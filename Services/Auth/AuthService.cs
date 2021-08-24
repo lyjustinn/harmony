@@ -9,11 +9,11 @@ namespace Harmony.Services.Auth
 {
     public class AuthService : IAuthService
     {
-        public HttpClient Client { get; }
+        private readonly HttpClient _client;
 
         public AuthService(HttpClient client)
         {
-            Client = client;
+            _client = client;
         }
         public async Task<string> GetToken (string code, string callback, string clientId, string clientSecret)
         {
@@ -29,7 +29,7 @@ namespace Harmony.Services.Auth
 
             try
             {
-                var response = await Client.PostAsync("https://accounts.spotify.com/api/token", content);
+                var response = await _client.PostAsync("https://accounts.spotify.com/api/token", content);
 
                 if (!response.IsSuccessStatusCode) return "";
 
