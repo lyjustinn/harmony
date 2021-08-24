@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
 using Harmony.Models.Playlist;
-using Harmony.Models.User;
 
 namespace Harmony.Services.Youtube 
 {
     public interface IYoutubeService
     {
-        Task<string> CreateYoutubePlaylist (string spotifyPlaylistId);
+        Task<string> CreateYoutubePlaylist (PlaylistItem spotifyPlaylist, string apiKey, GoogleCredential credential);
     }
 }

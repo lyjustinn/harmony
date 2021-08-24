@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Google.Apis.Auth.AspNetCore3;
 using Harmony.Services.Auth;
 using Harmony.Services.Spotify;
+using Harmony.Services.Youtube;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,6 +43,7 @@ namespace Harmony
             services.AddControllers();
             services.AddHttpClient<IAuthService, AuthService>();
             services.AddHttpClient<ISpotifyService, SpotifyService>();
+            services.AddHttpClient<IYoutubeService, YoutubeService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Harmony", Version = "v1" });

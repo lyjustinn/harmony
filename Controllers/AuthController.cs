@@ -1,12 +1,8 @@
 using System.Threading.Tasks;
 using Harmony.Services.Auth;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Google.Apis.Auth.AspNetCore3;
-using Google.Apis.YouTube.v3;
 
 namespace Harmony.Controllers 
 {
@@ -61,15 +57,6 @@ namespace Harmony.Controllers
         {
             var signingKey = _cfig["SigningKey"];
             return Ok(_authService.GetAccessToken(Request.Cookies["harmony_authToken"], signingKey));
-        }
-
-
-        [HttpGet]
-        [GoogleScopedAuthorize(YouTubeService.ScopeConstants.Youtube)]
-        [Route("youtube")]
-        public ActionResult Test()
-        {
-            return Ok("youtube!");
         }
     }
 }
