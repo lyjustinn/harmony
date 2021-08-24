@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
 using Harmony.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Harmony.Controllers 
 {
@@ -34,7 +36,8 @@ namespace Harmony.Controllers
         {
             string clientId = _cfig["SpotifyClientId"];
             string clientSecret = _cfig["SpotifyClientSecret"];
-            string token = await _authService.GetToken(code, _redirectUrl, clientId, clientSecret);
+            var signingKey = _cfig["SigningKey"];
+            string token = await _authService.GetToken(code, _redirectUrl, clientId, clientSecret, signingKey);
 
             Response.Cookies.Append(
                 "harmony_authToken",
@@ -48,6 +51,14 @@ namespace Harmony.Controllers
             );
 
             return Ok(token);
+        }
+
+        [HttpGet]
+        [Route("ping")]
+        public ActionResult Ping()
+        {
+            var signingKey = _cfig["SigningKey"];
+            return Ok(_authService.GetAccessToken(Request.Cookies["harmony_authToken"], signingKey));
         }
     }
 }
