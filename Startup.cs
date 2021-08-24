@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.Auth.AspNetCore3;
 using Harmony.Services.Auth;
 using Harmony.Services.Spotify;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +30,15 @@ namespace Harmony
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(o => {
+                o.DefaultChallengeScheme = GoogleOpenIdConnectDefaults.AuthenticationScheme;
+                o.DefaultForbidScheme = GoogleOpenIdConnectDefaults.AuthenticationScheme;
+                o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie()
+            .AddGoogleOpenIdConnect( options => {
+                options.ClientId = Configuration["GoogleClientId"];
+                options.ClientSecret = Configuration["GoogleClientSecret"];
+            });
             services.AddControllers();
             services.AddHttpClient<IAuthService, AuthService>();
             services.AddHttpClient<ISpotifyService, SpotifyService>();
@@ -51,6 +62,7 @@ namespace Harmony
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
