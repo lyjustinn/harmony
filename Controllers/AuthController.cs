@@ -48,15 +48,7 @@ namespace Harmony.Controllers
                 }
             );
 
-            return Ok(token);
-        }
-
-        [HttpGet]
-        [Route("ping")]
-        public ActionResult Ping()
-        {
-            var signingKey = _cfig["SigningKey"];
-            return Ok(_authService.GetAccessToken(Request.Cookies["harmony_authToken"], signingKey));
+            return Redirect("http://localhost:4200");
         }
     }
 }
