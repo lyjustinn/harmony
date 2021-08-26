@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Harmony.Services.Auth;
 using Harmony.Services.Youtube;
+using System;
 
 namespace Harmony.Controllers 
 {
@@ -33,11 +34,16 @@ namespace Harmony.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Image>> GetPlaylists()
+        public async Task<ActionResult<Image>> GetPlaylists([FromQuery(Name = "page")] string page)
         {
+            int pageNum;
+            bool result = Int32.TryParse(page, out pageNum);
+
+            if (!result) pageNum = 1;
+
             var signingKey = _cfig["SigningKey"];
             var accessToken = _authService.GetAccessToken(Request.Cookies["harmony_authToken"], signingKey);
-            var res = await _spotifyService.GetUserPlaylists(accessToken);
+            var res = await _spotifyService.GetUserPlaylists(accessToken, pageNum);
         
             if (res == null) return StatusCode(404);
 
@@ -63,17 +69,12 @@ namespace Harmony.Controllers
         {
             var signingKey = _cfig["SigningKey"];
             var accessToken = _authService.GetAccessToken(Request.Cookies["harmony_authToken"], signingKey);
-            var userPlaylists = await _spotifyService.GetUserPlaylists(accessToken);
-            
-            if (userPlaylists == null) return StatusCode(404);
-        
-            var isUserOwner = userPlaylists.Items.Where(x => x.Id == playlistId).Count() > 0;
-
-            if (!isUserOwner) return StatusCode(404);
 
             var specifiedPlaylist = await _spotifyService.GetPlaylist(accessToken, playlistId);
-        
             if (specifiedPlaylist == null) return StatusCode(404);
+
+            var user = await _spotifyService.GetUser(accessToken);
+            if (user == null || specifiedPlaylist.Owner.Id != user.Id) return StatusCode(404);
 
             var apiKey = _cfig["GoogleApiKey"];
             var cred = await authProvider.GetCredentialAsync();

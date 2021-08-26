@@ -7,7 +7,7 @@ namespace Harmony.Services.Spotify
 {
     public interface ISpotifyService
     {
-        Task<UserPlaylists> GetUserPlaylists (string token);
+        Task<UserPlaylists> GetUserPlaylists (string token, int pageNum);
         
         Task<CurrentUser> GetUser (string token);
 

@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Net.Http.Headers;
 using Harmony.Models.Playlist;
 using Harmony.Models.User;
+using System.Linq;
 
 namespace Harmony.Services.Spotify
 {
@@ -16,15 +17,22 @@ namespace Harmony.Services.Spotify
             client.BaseAddress = new Uri("https://api.spotify.com");
             _client = client;
         }
-        public async Task<UserPlaylists> GetUserPlaylists (string token)
+        public async Task<UserPlaylists> GetUserPlaylists (string token, int pageNum)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             
-            var response = await _client.GetAsync("/v1/me/playlists");
+            var response = await _client.GetAsync($"/v1/me/playlists?limit=10&offset={pageNum}");
 
             if (!response.IsSuccessStatusCode) return null;
 
+            var user = await GetUser(token);
+
             var body = await response.Content.ReadFromJsonAsync<UserPlaylists>();
+            var playlists = body.Items.Where(x => x.Owner.Id == user.Id).ToList();
+            body.Items = playlists;
+
+            
+
             return body;
         }
         

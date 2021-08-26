@@ -8,5 +8,7 @@ namespace Harmony.Models.Playlist
         public string Href { get; set; }
 
         public List<SongItem> Items { get; set; }
+
+        public int Count { get; set; }
     }
 }
