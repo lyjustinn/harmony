@@ -28,6 +28,8 @@ namespace Harmony
 
         public IConfiguration Configuration { get; }
 
+        private readonly string _corsPolicy = "CorsPolicy";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -40,10 +42,23 @@ namespace Harmony
                 options.ClientId = Configuration["GoogleClientId"];
                 options.ClientSecret = Configuration["GoogleClientSecret"];
             });
+
             services.AddControllers();
+            
+            services.AddCors(options => {
+                options.AddPolicy(name: _corsPolicy,
+                    builder => 
+                        builder.WithOrigins("http://localhost:5000", "https://localhost:5001", "http://localhost:4200")
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed(host => true)
+                        .AllowCredentials()
+                        .AllowAnyHeader());
+            });
+            
             services.AddHttpClient<IAuthService, AuthService>();
             services.AddHttpClient<ISpotifyService, SpotifyService>();
             services.AddHttpClient<IYoutubeService, YoutubeService>();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Harmony", Version = "v1" });
@@ -64,7 +79,10 @@ namespace Harmony
 
             app.UseRouting();
 
+            app.UseCors(_corsPolicy);
+
             app.UseAuthentication();
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
