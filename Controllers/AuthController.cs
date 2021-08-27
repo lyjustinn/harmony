@@ -29,6 +29,18 @@ namespace Harmony.Controllers
             return Redirect($"https://accounts.spotify.com/authorize?client_id={clientId}&response_type=code&redirect_uri={_redirectUrl}&scope={_scope}");
         }
 
+        [HttpGet]
+        [Route("signout")]
+        public ActionResult Signout() {
+            Response.Cookies.Delete("harmony_authToken", new CookieOptions { 
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+    
+            return Ok();
+        }
+
         [HttpGet("callback")]
         public async Task<ActionResult<string>> Callback (string code, string state)
         {
