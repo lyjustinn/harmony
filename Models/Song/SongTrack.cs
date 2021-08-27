@@ -10,5 +10,9 @@ namespace Harmony.Models.Song
         public string Id { get; set; }
 
         public List<Artist> Artists { get; set; }
+
+        public Album Album { get; set; }
+
+        public int Duration_ms { get; set; }
     }
 }

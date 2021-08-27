@@ -9,6 +9,6 @@ namespace Harmony.Models.Playlist
 
         public List<SongItem> Items { get; set; }
 
-        public int Count { get; set; }
+        public int Total { get; set; }
     }
 }
