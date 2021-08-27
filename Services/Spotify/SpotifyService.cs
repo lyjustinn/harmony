@@ -17,21 +17,18 @@ namespace Harmony.Services.Spotify
             client.BaseAddress = new Uri("https://api.spotify.com");
             _client = client;
         }
-        public async Task<UserPlaylists> GetUserPlaylists (string token, int pageNum)
+        public async Task<UserPlaylists> GetUserPlaylists (string token, int offset)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             
-            var response = await _client.GetAsync($"/v1/me/playlists?limit=10&offset={pageNum}");
+            var response = await _client.GetAsync($"/v1/me/playlists?limit=10&offset={offset*10}");
 
             if (!response.IsSuccessStatusCode) return null;
 
             var user = await GetUser(token);
 
             var body = await response.Content.ReadFromJsonAsync<UserPlaylists>();
-            var playlists = body.Items.Where(x => x.Owner.Id == user.Id).ToList();
-            body.Items = playlists;
-
-            
+            body.Uid = user.Id;
 
             return body;
         }
